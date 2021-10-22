@@ -1,9 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 import logging
 
 
 from redis_utils.handle_messages import query_all_messages, save_message_to_redis, \
-    publish_message_to_redis
+    publish_message_to_redis, event_stream
 
 app = Flask(__name__)
 
@@ -19,8 +19,6 @@ def post_message():
         save_message_to_redis(message)
         publish_message_to_redis(message)
 
-        # logging.info(f"new post message job enqueue, message={message}, job_id={job.get_id()}")
-        logging.info(f"new post message job enqueue, message={message}")
         return "message published", 201
 
 
@@ -35,5 +33,13 @@ def get_results():
     return ready_to_send_posted_messages, 200
 
 
+@app.route('/stream')
+def stream():
+
+
+    return Response(event_stream(),
+                          mimetype="text/event-stream")
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(threaded=True)

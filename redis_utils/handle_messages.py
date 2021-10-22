@@ -7,6 +7,7 @@ def save_message_to_redis(message: str) ->None:
     :param message: the message to be saved
     :return: None
     """
+
     r = get_redis()
     # push the message into the defined redis list, REDIS_LIST_KEY
     r.rpush(REDIS_LIST_KEY, message)
@@ -23,6 +24,7 @@ def publish_message_to_redis(message: str) ->None:
     r.publish(REDIS_SUB_KEY, message)
 
 
+
 def query_all_messages() -> list[str]:
     """
     Query the redis_utils database for all the strings stored in REDIS_LIST_KEY.
@@ -37,7 +39,7 @@ def query_all_messages() -> list[str]:
 
 def worker_save_message(message:str) -> None:
     """
-    This the function passed to the worker by the queue.
+    This is the function passed to the worker by the queue.
     In this implementation we save the message into redis_utils list.
 
     :param message: the message to be saved
@@ -46,3 +48,14 @@ def worker_save_message(message:str) -> None:
     save_message_to_redis(message)
 
 
+def event_stream():
+    """
+    The eveb strean listening to REDIS_SUB_KEY
+    :return: the function yield the new massges to the REDIS_SUB_KEY channel,
+    """
+    r = get_redis()
+    pubsub = r.pubsub()
+    pubsub.subscribe(REDIS_SUB_KEY)
+    for message in pubsub.listen():
+        if message['type'] == 'message':
+            yield '%s\n' % message['data']
