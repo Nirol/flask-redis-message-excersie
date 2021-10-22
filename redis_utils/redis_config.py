@@ -2,6 +2,7 @@ import redis
 from redis import StrictRedis
 
 REDIS_LIST_KEY = 'messages'
+REDIS_SUB_KEY = 'messages_channel'
 
 
 def get_redis() -> StrictRedis:

@@ -1,13 +1,11 @@
 from flask import Flask, request
 import logging
-from rq import Queue
 
-from worker import conn
 
-from redis_utils.handle_messages import query_all_messages, worker_save_message
+from redis_utils.handle_messages import query_all_messages, save_message_to_redis, \
+    publish_message_to_redis
 
 app = Flask(__name__)
-q = Queue(connection=conn)
 
 
 @app.route('/post', methods=['GET', 'POST'])
@@ -17,12 +15,13 @@ def post_message():
         message = request.json.get('message')
         if not message:
             return "BadRequest: post must include a message", 400
-        job = q.enqueue_call(
-            worker_save_message,[message]
-        )
-        logging.info(f"new post message job enqueue, message={message}, job_id={job.get_id()}")
 
-        return "message added to queue", 201
+        save_message_to_redis(message)
+        publish_message_to_redis(message)
+
+        # logging.info(f"new post message job enqueue, message={message}, job_id={job.get_id()}")
+        logging.info(f"new post message job enqueue, message={message}")
+        return "message published", 201
 
 
 @app.route("/getall", methods=['GET'])
