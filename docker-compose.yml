@@ -1,0 +1,23 @@
+version: '2'
+services:
+
+    app:
+        build: .
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/app
+        depends_on:
+            - redis
+        links:
+            - redis
+        environment:
+            LOCAL_ENV_TYPE: 'DOCKER'
+
+    redis:
+      image: redis
+      container_name: cache
+      ports:
+          - "6379:6379"
+      expose:
+        - "6379:6379"

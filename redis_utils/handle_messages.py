@@ -1,3 +1,5 @@
+from typing import List
+
 from redis_utils.redis_config import REDIS_LIST_KEY, get_redis, REDIS_SUB_KEY
 
 
@@ -25,7 +27,7 @@ def publish_message_to_redis(message: str) ->None:
 
 
 
-def query_all_messages() -> list[str]:
+def query_all_messages() -> List[str]:
     """
     Query the redis_utils database for all the strings stored in REDIS_LIST_KEY.
     :return: list of all posted strings

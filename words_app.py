@@ -1,3 +1,4 @@
+from typing import List
 from flask import Flask, request, Response
 import logging
 
@@ -25,7 +26,7 @@ def post_message():
 @app.route("/getall", methods=['GET'])
 def get_results():
     logging.info('new get all posted message request received')
-    posted_messages: list[str] = query_all_messages()
+    posted_messages: List[str] = query_all_messages()
 
     # parse the posted messages into a single string, joined by newline as required in the assignment
     ready_to_send_posted_messages = '\n'.join(posted_messages)
@@ -42,4 +43,4 @@ def stream():
 
 
 if __name__ == '__main__':
-    app.run(threaded=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)

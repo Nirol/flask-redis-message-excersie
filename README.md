@@ -1,6 +1,6 @@
 # flask-redis-message-excersie
 
-#Install instructions
+## Running with virtual env:
 
 * create a new virtual environment.
 * then activate it:
@@ -12,6 +12,7 @@
 * set the FLASK_APP and FLASK_ENV variables:
     * `export FLASK_APP=words_app`
     * `export FLASK_ENV=development`
+    * `export LOCAL_ENV_TYPE=VENV` 
  
 * run flask:
     * `flask run`
@@ -24,3 +25,8 @@ I am not sure if this issue happened due to my local environment or not.
 
 I manage to solve this issue by uninstalling and reinstalling Redis, and by deactivating and reactivating the virtual env.   
 
+## Running with Docker:
+
+* `docker compose build`
+
+* `docker compose run app`
